@@ -150,21 +150,21 @@
 
 // The SCSI ID
 #define SCSI_DEVICE0_ID 6
-
 // The drive number. This number is used to identify
 // a "disk" section. The number itself is meaningless.
 #define SCSI_DEVICE0_DRIVE 128
+#define SCSI_DEVICE0_VENDOR "PCE"
+#define SCSI_DEVICE0_PRODUCT "PCEDISK"
 
-// The vendor and product strings are returned by
-// the SCSI Inquiry command.
-// #define SCSI_DEVICE0_VENDOR "PCE     "
-// #define SCSI_DEVICE0_PRODUCT "PCEDISK         "
+// #define SCSI_DEVICE1_ID    4
+// #define SCSI_DEVICE1_DRIVE 129
+// #define SCSI_DEVICE1_VENDOR "PCE"
+// #define SCSI_DEVICE1_PRODUCT "PCEDISK"
 
-#define SCSI_DEVICE1_ID    4
-#define SCSI_DEVICE1_DRIVE 129
-
-#define SCSI_DEVICE2_ID    2
-#define SCSI_DEVICE2_DRIVE 130
+// #define SCSI_DEVICE2_ID    2
+// #define SCSI_DEVICE2_DRIVE 130
+// #define SCSI_DEVICE2_VENDOR "PCE"
+// #define SCSI_DEVICE2_PRODUCT "PCEDISK"
 
 // Up to multichar characters are sent or received
 // without any transmission delay. For a real serial port

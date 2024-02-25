@@ -926,65 +926,42 @@ void mac_setup_iwm (macplus_t *sim)
 	}
 }
 
-// static
-// void mac_setup_scsi (macplus_t *sim, ini_sct_t *ini)
-// {
-// 	ini_sct_t     *sct, *sctdev;
-// 	mem_blk_t     *blk;
-// 	unsigned long addr, size;
-// 	unsigned      id, drive;
-// 	const char    *vendor, *product;
+static
+void mac_setup_scsi (macplus_t *sim)
+{
+	mem_blk_t     *blk;
+	const unsigned long addr = 0x580000, size = 0x80000;
 
-// 	sct = ini_next_sct (ini, NULL, "scsi");
+	pce_log_tag (MSG_INF, "SCSI:", "addr=0x%06lx size=0x%lx\n", addr, size);
 
-// 	if (sct == NULL) {
-// 		return;
-// 	}
+	mac_scsi_init (&sim->scsi);
 
-// 	ini_get_uint32 (sct, "address", &addr, 0x580000);
-// 	ini_get_uint32 (sct, "size", &size, 0x80000);
+	if (sim->model & PCE_MAC_SE) {
+		mac_scsi_set_int_fct (&sim->scsi, sim, mac_interrupt_scsi);
+	}
 
-// 	pce_log_tag (MSG_INF, "SCSI:", "addr=0x%06lx size=0x%lx\n", addr, size);
+	mac_scsi_set_disks (&sim->scsi, sim->dsks);
 
-// 	mac_scsi_init (&sim->scsi);
+	blk = mem_blk_new (addr, size, 0);
+	if (blk == NULL) {
+		return;
+	}
 
-// 	if (sim->model & PCE_MAC_SE) {
-// 		mac_scsi_set_int_fct (&sim->scsi, sim, mac_interrupt_scsi);
-// 	}
+	mem_blk_set_fct (blk, &sim->scsi,
+		mac_scsi_get_uint8, mac_scsi_get_uint16, NULL,
+		mac_scsi_set_uint8, mac_scsi_set_uint16, NULL
+	);
 
-// 	mac_scsi_set_disks (&sim->scsi, sim->dsks);
+	mem_add_blk (sim->mem, blk, 1);
 
-// 	blk = mem_blk_new (addr, size, 0);
-// 	if (blk == NULL) {
-// 		return;
-// 	}
-
-// 	mem_blk_set_fct (blk, &sim->scsi,
-// 		mac_scsi_get_uint8, mac_scsi_get_uint16, NULL,
-// 		mac_scsi_set_uint8, mac_scsi_set_uint16, NULL
-// 	);
-
-// 	mem_add_blk (sim->mem, blk, 1);
-
-// 	sctdev = ini_next_sct (sct, NULL, "device");
-// 	while (sctdev != NULL) {
-// 		ini_get_uint16 (sctdev, "id", &id, 0);
-// 		ini_get_uint16 (sctdev, "drive", &drive, 0);
-// 		ini_get_string (sctdev, "vendor", &vendor, "PCE");
-// 		ini_get_string (sctdev, "product", &product, "PCEDISK");
-
-// 		pce_log_tag (MSG_INF,
-// 			"SCSI:", "id=%u drive=%u vendor=\"%s\" product=\"%s\"\n",
-// 			id, drive, vendor, product
-// 		);
-
-// 		mac_scsi_set_drive (&sim->scsi, id, drive);
-// 		mac_scsi_set_drive_vendor (&sim->scsi, id, vendor);
-// 		mac_scsi_set_drive_product (&sim->scsi, id, product);
-
-// 		sctdev = ini_next_sct (sct, sctdev, "device");
-// 	}
-// }
+	mac_scsi_set_drive (&sim->scsi, SCSI_DEVICE0_ID, SCSI_DEVICE0_DRIVE);
+	mac_scsi_set_drive_vendor (&sim->scsi, SCSI_DEVICE0_ID, SCSI_DEVICE0_VENDOR);
+	mac_scsi_set_drive_product (&sim->scsi, SCSI_DEVICE0_ID, SCSI_DEVICE0_PRODUCT);
+	pce_log_tag (MSG_INF,
+		"SCSI:", "id=%u drive=%u vendor=\"%s\" product=\"%s\"\n",
+		SCSI_DEVICE0_ID, SCSI_DEVICE0_DRIVE, SCSI_DEVICE0_VENDOR, SCSI_DEVICE0_PRODUCT
+	);
+}
 
 // static
 // void mac_setup_sony (macplus_t *sim, ini_sct_t *ini)
@@ -1072,81 +1049,81 @@ void mac_setup_iwm (macplus_t *sim)
 // 	}
 // }
 
-// static
-// void mac_setup_terminal (macplus_t *sim, ini_sct_t *ini)
-// {
-// 	sim->trm = ini_get_terminal (ini, par_terminal);
+static
+void mac_setup_terminal (macplus_t *sim, ini_sct_t *ini)
+{
+	sim->trm = ini_get_terminal (ini, par_terminal);
 
-// 	if (sim->trm == NULL) {
-// 		return;
-// 	}
+	if (sim->trm == NULL) {
+		return;
+	}
 
-// 	trm_set_msg_fct (sim->trm, sim, mac_set_msg);
-// 	trm_set_key_fct (sim->trm, sim, mac_set_key);
-// 	trm_set_mouse_fct (sim->trm, sim, mac_set_mouse);
-// }
+	trm_set_msg_fct (sim->trm, sim, mac_set_msg);
+	trm_set_key_fct (sim->trm, sim, mac_set_key);
+	trm_set_mouse_fct (sim->trm, sim, mac_set_mouse);
+}
 
-// static
-// void mac_setup_video (macplus_t *sim, ini_sct_t *ini)
-// {
-// 	unsigned long addr1, addr2;
-// 	unsigned      w, h, i;
-// 	unsigned      bright;
-// 	unsigned long col0, col1;
-// 	ini_sct_t     *sct;
+static
+void mac_setup_video (macplus_t *sim, ini_sct_t *ini)
+{
+	unsigned long addr1, addr2;
+	unsigned      w, h, i;
+	unsigned      bright;
+	unsigned long col0, col1;
+	ini_sct_t     *sct;
 
-// 	if (sim->ram == NULL) {
-// 		return;
-// 	}
+	if (sim->ram == NULL) {
+		return;
+	}
 
-// 	sct = ini_next_sct (ini, NULL, "video");
+	sct = ini_next_sct (ini, NULL, "video");
 
-// 	addr1 = mem_blk_get_size (sim->ram);
-// 	addr1 = (addr1 < 0x5900) ? 0 : (addr1 - 0x5900);
+	addr1 = mem_blk_get_size (sim->ram);
+	addr1 = (addr1 < 0x5900) ? 0 : (addr1 - 0x5900);
 
-// 	ini_get_uint32 (sct, "address", &addr2, addr1);
-// 	ini_get_uint16 (sct, "width", &w, 512);
-// 	ini_get_uint16 (sct, "height", &h, 342);
-// 	ini_get_uint32 (sct, "color0", &col0, 0);
-// 	ini_get_uint32 (sct, "color1", &col1, 0xffffff);
-// 	ini_get_uint16 (sct, "brightness", &bright, 1000);
+	ini_get_uint32 (sct, "address", &addr2, addr1);
+	ini_get_uint16 (sct, "width", &w, 512);
+	ini_get_uint16 (sct, "height", &h, 342);
+	ini_get_uint32 (sct, "color0", &col0, 0);
+	ini_get_uint32 (sct, "color1", &col1, 0xffffff);
+	ini_get_uint16 (sct, "brightness", &bright, 1000);
 
-// 	pce_log_tag (MSG_INF, "VIDEO:", "addr=0x%06lX w=%u h=%u bright=%u%%\n",
-// 		addr2, w, h, bright / 10
-// 	);
+	pce_log_tag (MSG_INF, "VIDEO:", "addr=0x%06lX w=%u h=%u bright=%u%%\n",
+		addr2, w, h, bright / 10
+	);
 
-// 	sim->vbuf1 = addr2;
+	sim->vbuf1 = addr2;
 
-// 	if ((addr1 == addr2) && (addr2 >= 0x8000)) {
-// 		sim->vbuf2 = addr2 - 0x8000;
-// 	}
-// 	else {
-// 		sim->vbuf2 = addr2;
-// 	}
+	if ((addr1 == addr2) && (addr2 >= 0x8000)) {
+		sim->vbuf2 = addr2 - 0x8000;
+	}
+	else {
+		sim->vbuf2 = addr2;
+	}
 
-// 	sim->video = mac_video_new (w, h);
+	sim->video = mac_video_new (w, h);
 
-// 	if (sim->video == NULL) {
-// 		return;
-// 	}
+	if (sim->video == NULL) {
+		return;
+	}
 
-// 	mac_video_set_vbi_fct (sim->video, sim, mac_interrupt_vbi);
+	mac_video_set_vbi_fct (sim->video, sim, mac_interrupt_vbi);
 
-// 	mac_set_vbuf (sim, sim->vbuf1);
+	mac_set_vbuf (sim, sim->vbuf1);
 
-// 	if (sim->trm != NULL) {
-// 		mac_video_set_terminal (sim->video, sim->trm);
+	if (sim->trm != NULL) {
+		mac_video_set_terminal (sim->video, sim->trm);
 
-// 		trm_open (sim->trm, 512, 342);
-// 	}
+		trm_open (sim->trm, 512, 342);
+	}
 
-// 	mac_video_set_color (sim->video, col0, col1);
-// 	mac_video_set_brightness (sim->video, (255UL * bright + 500) / 1000);
+	mac_video_set_color (sim->video, col0, col1);
+	mac_video_set_brightness (sim->video, (255UL * bright + 500) / 1000);
 
-// 	for (i = 0; i < (w / 8) * h; i++) {
-// 		mem_set_uint8 (sim->mem, sim->vbuf1 + i, 0xff);
-// 	}
-// }
+	for (i = 0; i < (w / 8) * h; i++) {
+		mem_set_uint8 (sim->mem, sim->vbuf1 + i, 0xff);
+	}
+}
 
 void mac_init (macplus_t *sim, ini_sct_t *ini)
 {
@@ -1199,10 +1176,10 @@ void mac_init (macplus_t *sim, ini_sct_t *ini)
 	mac_setup_adb (sim);
 	mac_setup_disks (sim);
 	mac_setup_iwm (sim);
-	// mac_setup_scsi (sim, ini);
+	mac_setup_scsi (sim);
 	// mac_setup_sony (sim, ini);
 	// mac_setup_sound (sim, ini);
-	// mac_setup_terminal (sim, ini);
+	mac_setup_terminal (sim, ini);
 	// mac_setup_video (sim, ini);
 
 	// pce_load_mem_ini (sim->mem, ini);
