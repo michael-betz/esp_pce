@@ -188,6 +188,9 @@
 // Brightness in the range 0 - 1000.
 #define VIDEO_BRIGHTNESS 1000
 
+#define VIDEO_W 512
+#define VIDEO_H 342
+
 
 // disk {
 // 	drive    = 1

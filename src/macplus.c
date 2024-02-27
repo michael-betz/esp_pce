@@ -893,7 +893,12 @@ void mac_setup_disks (macplus_t *sim)
 
 	dsks = dsks_new();
 
-	dsk = flash_disk_init("hd", 0);
+	#ifdef SDL_SIM
+		dsk = dsk_img_open("hd.img", 0, 0);
+	#else
+		dsk = flash_disk_init("hd", 0);
+	#endif
+
 	if (dsk != NULL)
 		dsks_add_disk (dsks, dsk);
 
@@ -1066,42 +1071,30 @@ void mac_setup_terminal (macplus_t *sim, ini_sct_t *ini)
 static
 void mac_setup_video (macplus_t *sim, ini_sct_t *ini)
 {
-	unsigned long addr1, addr2;
-	unsigned      w, h, i;
-	unsigned      bright;
-	unsigned long col0, col1;
-	ini_sct_t     *sct;
+	unsigned long addr1;
+	unsigned      i;
 
 	if (sim->ram == NULL) {
 		return;
 	}
 
-	sct = ini_next_sct (ini, NULL, "video");
-
 	addr1 = mem_blk_get_size (sim->ram);
 	addr1 = (addr1 < 0x5900) ? 0 : (addr1 - 0x5900);
 
-	ini_get_uint32 (sct, "address", &addr2, addr1);
-	ini_get_uint16 (sct, "width", &w, 512);
-	ini_get_uint16 (sct, "height", &h, 342);
-	ini_get_uint32 (sct, "color0", &col0, 0);
-	ini_get_uint32 (sct, "color1", &col1, 0xffffff);
-	ini_get_uint16 (sct, "brightness", &bright, 1000);
-
 	pce_log_tag (MSG_INF, "VIDEO:", "addr=0x%06lX w=%u h=%u bright=%u%%\n",
-		addr2, w, h, bright / 10
+		addr1, VIDEO_W, VIDEO_H, VIDEO_BRIGHTNESS / 10
 	);
 
-	sim->vbuf1 = addr2;
+	sim->vbuf1 = addr1;
 
-	if ((addr1 == addr2) && (addr2 >= 0x8000)) {
-		sim->vbuf2 = addr2 - 0x8000;
+	if ((addr1 == addr1) && (addr1 >= 0x8000)) {
+		sim->vbuf2 = addr1 - 0x8000;
 	}
 	else {
-		sim->vbuf2 = addr2;
+		sim->vbuf2 = addr1;
 	}
 
-	sim->video = mac_video_new (w, h);
+	sim->video = mac_video_new (VIDEO_W, VIDEO_H);
 
 	if (sim->video == NULL) {
 		return;
@@ -1117,10 +1110,10 @@ void mac_setup_video (macplus_t *sim, ini_sct_t *ini)
 		trm_open (sim->trm, 512, 342);
 	}
 
-	mac_video_set_color (sim->video, col0, col1);
-	mac_video_set_brightness (sim->video, (255UL * bright + 500) / 1000);
+	mac_video_set_color (sim->video, VIDEO_COLOR0, VIDEO_COLOR1);
+	mac_video_set_brightness (sim->video, (255UL * VIDEO_BRIGHTNESS + 500) / 1000);
 
-	for (i = 0; i < (w / 8) * h; i++) {
+	for (i = 0; i < (VIDEO_W / 8) * VIDEO_H; i++) {
 		mem_set_uint8 (sim->mem, sim->vbuf1 + i, 0xff);
 	}
 }

@@ -32,7 +32,6 @@
 #include <unistd.h>
 #include <signal.h>
 
-#include <lib/cfg.h>
 #include <lib/cmd.h>
 #include <lib/console.h>
 #include <lib/getopt.h>
@@ -42,10 +41,7 @@
 #include <lib/sysdep.h>
 
 #include <lib/libini.h>
-
-#ifdef PCE_ENABLE_SDL
-#include <SDL.h>
-#endif
+#include <SDL2/SDL.h>
 
 
 const char *par_terminal = NULL;
@@ -59,8 +55,6 @@ unsigned   par_sig_int = 0;
 monitor_t  par_mon;
 
 ini_sct_t  *par_cfg = NULL;
-
-static ini_strings_t par_ini_str;
 
 
 static pce_option_t opts[] = {
@@ -244,23 +238,12 @@ int main (int argc, char *argv[])
 	char      **optarg;
 	int       run, nomon;
 	unsigned  drive;
-	char      *cfg;
-	ini_sct_t *sct;
 
-	cfg = NULL;
 	run = 0;
 	nomon = 0;
 
 	pce_log_init();
 	pce_log_add_fp (stderr, 0, MSG_INF);
-
-	par_cfg = ini_sct_new (NULL);
-
-	if (par_cfg == NULL) {
-		return (1);
-	}
-
-	ini_str_init (&par_ini_str);
 
 	while (1) {
 		r = pce_getopt (argc, argv, &optarg, opts);
@@ -290,36 +273,12 @@ int main (int argc, char *argv[])
 			}
 			break;
 
-		case 'c':
-			cfg = optarg[0];
-			break;
-
 		case 'd':
 			pce_path_set (optarg[0]);
 			break;
 
-		case 'i':
-			if (ini_read_str (par_cfg, optarg[0])) {
-				fprintf (stderr,
-					"%s: error parsing ini string (%s)\n",
-					argv[0], optarg[0]
-				);
-				return (1);
-			}
-			break;
-
-		case 'I':
-			ini_str_add (&par_ini_str, optarg[0], "\n", NULL);
-			break;
-
 		case 'l':
 			pce_log_add_fname (optarg[0], MSG_DEB);
-			break;
-
-		case 'p':
-			ini_str_add (&par_ini_str, "cpu.model = \"",
-				optarg[0], "\"\n"
-			);
 			break;
 
 		case 'q':
@@ -332,12 +291,6 @@ int main (int argc, char *argv[])
 
 		case 'R':
 			nomon = 1;
-			break;
-
-		case 's':
-			ini_str_add (&par_ini_str, "cpu.speed = ",
-				optarg[0], "\n"
-			);
 			break;
 
 		case 't':
@@ -361,27 +314,9 @@ int main (int argc, char *argv[])
 
 	mac_log_banner();
 
-	if (pce_load_config (par_cfg, cfg)) {
-		return (1);
-	}
-
-	sct = ini_next_sct (par_cfg, NULL, "macplus");
-
-	if (sct == NULL) {
-		sct = par_cfg;
-	}
-
-	if (ini_str_eval (&par_ini_str, sct, 1)) {
-		return (1);
-	}
-
 	atexit (mac_atexit);
 
-#ifdef PCE_ENABLE_SDL
 	SDL_Init (0);
-#endif
-
-	pce_path_ini (sct);
 
 	signal (SIGINT, &sig_int);
 	signal (SIGSEGV, &sig_segv);
@@ -389,7 +324,7 @@ int main (int argc, char *argv[])
 
 	pce_console_init (stdin, stdout);
 
-	par_sim = mac_new (sct);
+	par_sim = mac_new (NULL);
 
 	mon_init (&par_mon);
 	mon_set_cmd_fct (&par_mon, mac_cmd, par_sim);
