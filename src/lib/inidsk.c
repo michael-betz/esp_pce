@@ -118,46 +118,46 @@ int file_exists (const char *name)
 
 disk_t *ini_get_cow (ini_sct_t *sct, disk_t *dsk)
 {
-	disk_t     *cow;
-	ini_val_t  *val;
-	const char *cname;
+	// disk_t     *cow;
+	// ini_val_t  *val;
+	// const char *cname;
 
-	val = NULL;
-	while ((val = ini_next_val (sct, val, "cow")) != NULL) {
-		cname = ini_val_get_str (val);
-		if (cname == NULL) {
-			dsk_del (dsk);
-			return (NULL);
-		}
+	// val = NULL;
+	// while ((val = ini_next_val (sct, val, "cow")) != NULL) {
+	// 	cname = ini_val_get_str (val);
+	// 	if (cname == NULL) {
+	// 		dsk_del (dsk);
+	// 		return (NULL);
+	// 	}
 
-		if (file_exists (cname) == 0) {
-			cow = dsk_create_cow (dsk, cname, 16384);
-		}
-		else {
-			cow = dsk_open_cow (dsk, cname);
-		}
+	// 	if (file_exists (cname) == 0) {
+	// 		cow = dsk_create_cow (dsk, cname, 16384);
+	// 	}
+	// 	else {
+	// 		cow = dsk_open_cow (dsk, cname);
+	// 	}
 
-		if (cow == NULL) {
-			pce_log_tag (MSG_ERR,
-				"DISK:", "*** cow failed (drive=%u file=%s)\n",
-				dsk_get_drive (dsk), cname
-			);
+	// 	if (cow == NULL) {
+	// 		pce_log_tag (MSG_ERR,
+	// 			"DISK:", "*** cow failed (drive=%u file=%s)\n",
+	// 			dsk_get_drive (dsk), cname
+	// 		);
 
-			dsk_del (dsk);
+	// 		dsk_del (dsk);
 
-			return (NULL);
-		}
-		else {
-			dsk_set_readonly (cow, 0);
+	// 		return (NULL);
+	// 	}
+	// 	else {
+	// 		dsk_set_readonly (cow, 0);
 
-			dsk = cow;
-		}
+	// 		dsk = cow;
+	// 	}
 
-		pce_log_tag (MSG_INF,
-			"DISK:", "drive=%u type=cow file=%s\n",
-			dsk_get_drive (dsk), cname
-		);
-	}
+	// 	pce_log_tag (MSG_INF,
+	// 		"DISK:", "drive=%u type=cow file=%s\n",
+	// 		dsk_get_drive (dsk), cname
+	// 	);
+	// }
 
 	return (dsk);
 }
@@ -165,27 +165,27 @@ disk_t *ini_get_cow (ini_sct_t *sct, disk_t *dsk)
 static
 void ini_get_vchs (ini_sct_t *sct, disk_t *dsk)
 {
-	unsigned long vc, vh, vs;
+	unsigned long vc=0, vh=0, vs=0;
 
-	ini_get_uint32 (sct, "visible_c", &vc, 0);
-	ini_get_uint32 (sct, "visible_h", &vh, 0);
-	ini_get_uint32 (sct, "visible_s", &vs, 0);
+	// ini_get_uint32 (sct, "visible_c", &vc, 0);
+	// ini_get_uint32 (sct, "visible_h", &vh, 0);
+	// ini_get_uint32 (sct, "visible_s", &vs, 0);
 
-	vc = (vc == 0) ? dsk->c : vc;
-	vh = (vh == 0) ? dsk->h : vh;
-	vs = (vs == 0) ? dsk->s : vs;
+	// vc = (vc == 0) ? dsk->c : vc;
+	// vh = (vh == 0) ? dsk->h : vh;
+	// vs = (vs == 0) ? dsk->s : vs;
 
-	dsk_set_visible_chs (dsk, vc, vh, vs);
+	// dsk_set_visible_chs (dsk, vc, vh, vs);
 
-	if ((dsk->c != vc) || (dsk->h != vh) || (dsk->s != vs)) {
-		pce_log_tag (MSG_INF,
-			"DISK:", "drive=%u vchs=%lu/%lu/%lu\n",
-			dsk_get_drive (dsk),
-			(unsigned long) dsk->visible_c,
-			(unsigned long) dsk->visible_h,
-			(unsigned long) dsk->visible_s
-		);
-	}
+	// if ((dsk->c != vc) || (dsk->h != vh) || (dsk->s != vs)) {
+	// 	pce_log_tag (MSG_INF,
+	// 		"DISK:", "drive=%u vchs=%lu/%lu/%lu\n",
+	// 		dsk_get_drive (dsk),
+	// 		(unsigned long) dsk->visible_c,
+	// 		(unsigned long) dsk->visible_h,
+	// 		(unsigned long) dsk->visible_s
+	// 	);
+	// }
 }
 
 static
@@ -206,222 +206,222 @@ disk_t *ini_get_disk_part (ini_sct_t *sct,
 	}
 
 	p = NULL;
-	while ((p = ini_next_sct (sct, p, "partition")) != NULL) {
-		ini_get_uint32 (p, "offset", &start, 0);
-		ini_get_uint32 (p, "block_start", &blk_i, 0);
-		ini_get_uint32 (p, "block_count", &blk_n, 0);
-		ini_get_string (p, "file", &fname, NULL);
-		ini_get_bool (p, "readonly", &ro, 0);
+	// while ((p = ini_next_sct (sct, p, "partition")) != NULL) {
+	// 	ini_get_uint32 (p, "offset", &start, 0);
+	// 	ini_get_uint32 (p, "block_start", &blk_i, 0);
+	// 	ini_get_uint32 (p, "block_count", &blk_n, 0);
+	// 	ini_get_string (p, "file", &fname, NULL);
+	// 	ini_get_bool (p, "readonly", &ro, 0);
 
-		if (fname == NULL) {
-			dsk_del (dsk);
-			return (NULL);
-		}
+	// 	if (fname == NULL) {
+	// 		dsk_del (dsk);
+	// 		return (NULL);
+	// 	}
 
-		path = pce_path_get (fname);
+	// 	path = pce_path_get (fname);
 
-		if (dsk_part_add_partition (dsk, path, start, blk_i, blk_n, ro)) {
-			free (path);
-			dsk_del (dsk);
-			return (NULL);
-		}
+	// 	if (dsk_part_add_partition (dsk, path, start, blk_i, blk_n, ro)) {
+	// 		free (path);
+	// 		dsk_del (dsk);
+	// 		return (NULL);
+	// 	}
 
-		free (path);
-	}
+	// 	free (path);
+	// }
 
 	return (dsk);
 }
 
-int ini_get_disk (ini_sct_t *sct, disk_t **ret)
-{
-	disk_t        *dsk;
-	ini_val_t     *val;
-	FILE          *fp;
-	unsigned      drive;
-	unsigned long c, h, s, n;
-	unsigned long ofs;
-	int           ro;
-	int           optional;
-	const char    *type, *fname;
-	char          *path;
+// int ini_get_disk (ini_sct_t *sct, disk_t **ret)
+// {
+// 	disk_t        *dsk;
+// 	ini_val_t     *val;
+// 	FILE          *fp;
+// 	unsigned      drive;
+// 	unsigned long c, h, s, n;
+// 	unsigned long ofs;
+// 	int           ro;
+// 	int           optional;
+// 	const char    *type, *fname;
+// 	char          *path;
 
-	ini_get_uint16 (sct, "drive", &drive, 0);
-	ini_get_string (sct, "type", &type, "auto");
-	ini_get_uint32 (sct, "offset", &ofs, 0);
+// 	ini_get_uint16 (sct, "drive", &drive, 0);
+// 	ini_get_string (sct, "type", &type, "auto");
+// 	ini_get_uint32 (sct, "offset", &ofs, 0);
 
-	ini_get_uint32 (sct, "c", &c, 0);
-	ini_get_uint32 (sct, "h", &h, 0);
-	ini_get_uint32 (sct, "s", &s, 0);
+// 	ini_get_uint32 (sct, "c", &c, 0);
+// 	ini_get_uint32 (sct, "h", &h, 0);
+// 	ini_get_uint32 (sct, "s", &s, 0);
 
-	if (ini_get_uint32 (sct, "blocks", &n, 0) == 0) {
-		;
-	}
-	else if (ini_get_uint32 (sct, "size", &n, 0) == 0) {
-		n = n & ~511UL;
-	}
-	else if (ini_get_uint32 (sct, "sizek", &n, 0) == 0) {
-		n = 2 * n;
-	}
-	else if (ini_get_uint32 (sct, "sizem", &n, 0) == 0) {
-		n = 2048 * n;
-	}
-	else if (ini_get_uint32 (sct, "sizeg", &n, 0) == 0) {
-		n = 2048UL * 1024UL * n;
-	}
-	else {
-		n = 0;
-	}
+// 	if (ini_get_uint32 (sct, "blocks", &n, 0) == 0) {
+// 		;
+// 	}
+// 	else if (ini_get_uint32 (sct, "size", &n, 0) == 0) {
+// 		n = n & ~511UL;
+// 	}
+// 	else if (ini_get_uint32 (sct, "sizek", &n, 0) == 0) {
+// 		n = 2 * n;
+// 	}
+// 	else if (ini_get_uint32 (sct, "sizem", &n, 0) == 0) {
+// 		n = 2048 * n;
+// 	}
+// 	else if (ini_get_uint32 (sct, "sizeg", &n, 0) == 0) {
+// 		n = 2048UL * 1024UL * n;
+// 	}
+// 	else {
+// 		n = 0;
+// 	}
 
-	ini_get_bool (sct, "readonly", &ro, 0);
-	ini_get_bool (sct, "optional", &optional, 0);
+// 	ini_get_bool (sct, "readonly", &ro, 0);
+// 	ini_get_bool (sct, "optional", &optional, 0);
 
-	val = NULL;
-	dsk = NULL;
-	path = NULL;
+// 	val = NULL;
+// 	dsk = NULL;
+// 	path = NULL;
 
-	while ((val = ini_next_val (sct, val, "file")) != NULL) {
-		fname = ini_val_get_str (val);
+// 	while ((val = ini_next_val (sct, val, "file")) != NULL) {
+// 		fname = ini_val_get_str (val);
 
-		if (fname == NULL) {
-			continue;
-		}
+// 		if (fname == NULL) {
+// 			continue;
+// 		}
 
-		free (path);
-		path = pce_path_get (fname);
+// 		free (path);
+// 		path = pce_path_get (fname);
 
-		if (path == NULL) {
-			continue;
-		}
+// 		if (path == NULL) {
+// 			continue;
+// 		}
 
-		fp = fopen (path, "rb");
+// 		fp = fopen (path, "rb");
 
-		if (fp == NULL) {
-			continue;
-		}
+// 		if (fp == NULL) {
+// 			continue;
+// 		}
 
-		fclose (fp);
+// 		fclose (fp);
 
-		if (strcmp (type, "auto") == 0) {
-			dsk = dsk_auto_open (path, ofs, ro);
-		}
-		else if (strcmp (type, "ram") == 0) {
-			dsk = dsk_ram_open (path, n, c, h, s, ro);
-		}
-		else if (strcmp (type, "image") == 0) {
-			dsk = dsk_img_open (path, ofs, ro);
-		}
-		else if (strcmp (type, "dosemu") == 0) {
-			dsk = dsk_dosemu_open (path, ro);
-		}
-		else if (strcmp (type, "pbi") == 0) {
-			dsk = dsk_pbi_open (path, ro);
-		}
-		else if (strcmp (type, "pce") == 0) {
-			dsk = dsk_pce_open (path, ro);
-		}
-		else if (strcmp (type, "qed") == 0) {
-			dsk = dsk_qed_open (path, ro);
-		}
-		else if (strcmp (type, "chd") == 0) {
-			dsk = dsk_chd_open (path, ro);
-		}
-		else if (strcmp (type, "partition") == 0) {
-			dsk = ini_get_disk_part (sct, c, h, s, ro);
-		}
-		else if (strcmp (type, "anadisk") == 0) {
-			dsk = dsk_psi_open (path, PSI_FORMAT_ANADISK, ro);
-		}
-		else if (strcmp (type, "cp2") == 0) {
-			dsk = dsk_psi_open (path, PSI_FORMAT_CP2, ro);
-		}
-		else if (strcmp (type, "dc42") == 0) {
-			dsk = dsk_psi_open (path, PSI_FORMAT_DC42, ro);
-		}
-		else if (strcmp (type, "imagedisk") == 0) {
-			dsk = dsk_psi_open (path, PSI_FORMAT_IMD, ro);
-		}
-		else if (strcmp (type, "imd") == 0) {
-			dsk = dsk_psi_open (path, PSI_FORMAT_IMD, ro);
-		}
-		else if (strcmp (type, "pfdc") == 0) {
-			dsk = dsk_psi_open (path, PSI_FORMAT_PFDC, ro);
-		}
-		else if (strcmp (type, "pfdc-auto") == 0) {
-			dsk = dsk_psi_open (path, PSI_FORMAT_NONE, ro);
-		}
-		else if (strcmp (type, "pri") == 0) {
-			dsk = dsk_pri_open (path, PRI_FORMAT_PRI, ro);
-		}
-		else if (strcmp (type, "psi") == 0) {
-			dsk = dsk_psi_open (path, PSI_FORMAT_PSI, ro);
-		}
-		else if (strcmp (type, "tc") == 0) {
-			dsk = dsk_pri_open (path, PRI_FORMAT_TC, ro);
-		}
-		else if (strcmp (type, "teledisk") == 0) {
-			dsk = dsk_psi_open (path, PSI_FORMAT_TD0, ro);
-		}
-		else if (strcmp (type, "woz") == 0) {
-			dsk = dsk_pri_open (path, PRI_FORMAT_WOZ, ro);
-		}
+// 		if (strcmp (type, "auto") == 0) {
+// 			dsk = dsk_auto_open (path, ofs, ro);
+// 		}
+// 		else if (strcmp (type, "ram") == 0) {
+// 			dsk = dsk_ram_open (path, n, c, h, s, ro);
+// 		}
+// 		else if (strcmp (type, "image") == 0) {
+// 			dsk = dsk_img_open (path, ofs, ro);
+// 		}
+// 		else if (strcmp (type, "dosemu") == 0) {
+// 			dsk = dsk_dosemu_open (path, ro);
+// 		}
+// 		else if (strcmp (type, "pbi") == 0) {
+// 			dsk = dsk_pbi_open (path, ro);
+// 		}
+// 		else if (strcmp (type, "pce") == 0) {
+// 			dsk = dsk_pce_open (path, ro);
+// 		}
+// 		else if (strcmp (type, "qed") == 0) {
+// 			dsk = dsk_qed_open (path, ro);
+// 		}
+// 		else if (strcmp (type, "chd") == 0) {
+// 			dsk = dsk_chd_open (path, ro);
+// 		}
+// 		else if (strcmp (type, "partition") == 0) {
+// 			dsk = ini_get_disk_part (sct, c, h, s, ro);
+// 		}
+// 		else if (strcmp (type, "anadisk") == 0) {
+// 			dsk = dsk_psi_open (path, PSI_FORMAT_ANADISK, ro);
+// 		}
+// 		else if (strcmp (type, "cp2") == 0) {
+// 			dsk = dsk_psi_open (path, PSI_FORMAT_CP2, ro);
+// 		}
+// 		else if (strcmp (type, "dc42") == 0) {
+// 			dsk = dsk_psi_open (path, PSI_FORMAT_DC42, ro);
+// 		}
+// 		else if (strcmp (type, "imagedisk") == 0) {
+// 			dsk = dsk_psi_open (path, PSI_FORMAT_IMD, ro);
+// 		}
+// 		else if (strcmp (type, "imd") == 0) {
+// 			dsk = dsk_psi_open (path, PSI_FORMAT_IMD, ro);
+// 		}
+// 		else if (strcmp (type, "pfdc") == 0) {
+// 			dsk = dsk_psi_open (path, PSI_FORMAT_PFDC, ro);
+// 		}
+// 		else if (strcmp (type, "pfdc-auto") == 0) {
+// 			dsk = dsk_psi_open (path, PSI_FORMAT_NONE, ro);
+// 		}
+// 		else if (strcmp (type, "pri") == 0) {
+// 			dsk = dsk_pri_open (path, PRI_FORMAT_PRI, ro);
+// 		}
+// 		else if (strcmp (type, "psi") == 0) {
+// 			dsk = dsk_psi_open (path, PSI_FORMAT_PSI, ro);
+// 		}
+// 		else if (strcmp (type, "tc") == 0) {
+// 			dsk = dsk_pri_open (path, PRI_FORMAT_TC, ro);
+// 		}
+// 		else if (strcmp (type, "teledisk") == 0) {
+// 			dsk = dsk_psi_open (path, PSI_FORMAT_TD0, ro);
+// 		}
+// 		else if (strcmp (type, "woz") == 0) {
+// 			dsk = dsk_pri_open (path, PRI_FORMAT_WOZ, ro);
+// 		}
 
-		if (dsk != NULL) {
-			break;
-		}
-	}
+// 		if (dsk != NULL) {
+// 			break;
+// 		}
+// 	}
 
-	if (dsk == NULL) {
-		*ret = NULL;
+// 	if (dsk == NULL) {
+// 		*ret = NULL;
 
-		free (path);
+// 		free (path);
 
-		if (optional == 0) {
-			pce_log (MSG_ERR, "*** loading drive 0x%02x failed\n", drive);
-			return (1);
-		}
+// 		if (optional == 0) {
+// 			pce_log (MSG_ERR, "*** loading drive 0x%02x failed\n", drive);
+// 			return (1);
+// 		}
 
-		return (0);
-	}
+// 		return (0);
+// 	}
 
-	dsk_set_drive (dsk, drive);
+// 	dsk_set_drive (dsk, drive);
 
-	if ((c != 0) || (h != 0) || (s != 0)) {
-		dsk_set_geometry (dsk, dsk_get_block_cnt (dsk), c, h, s);
-	}
+// 	if ((c != 0) || (h != 0) || (s != 0)) {
+// 		dsk_set_geometry (dsk, dsk_get_block_cnt (dsk), c, h, s);
+// 	}
 
-	pce_log_tag (MSG_INF,
-		"DISK:", "drive=%u type=%s blocks=%lu chs=%lu/%lu/%lu %s file=%s\n",
-		drive, type,
-		(unsigned long) dsk->blocks,
-		(unsigned long) dsk->c,
-		(unsigned long) dsk->h,
-		(unsigned long) dsk->s,
-		(ro ? "ro" : "rw"),
-		(path != NULL) ? path : "<>"
-	);
+// 	pce_log_tag (MSG_INF,
+// 		"DISK:", "drive=%u type=%s blocks=%lu chs=%lu/%lu/%lu %s file=%s\n",
+// 		drive, type,
+// 		(unsigned long) dsk->blocks,
+// 		(unsigned long) dsk->c,
+// 		(unsigned long) dsk->h,
+// 		(unsigned long) dsk->s,
+// 		(ro ? "ro" : "rw"),
+// 		(path != NULL) ? path : "<>"
+// 	);
 
-	free (path);
+// 	free (path);
 
-	ini_get_vchs (sct, dsk);
+// 	ini_get_vchs (sct, dsk);
 
-	dsk = ini_get_cow (sct, dsk);
+// 	dsk = ini_get_cow (sct, dsk);
 
-	if (dsk == NULL) {
-		*ret = NULL;
+// 	if (dsk == NULL) {
+// 		*ret = NULL;
 
-		if (optional == 0) {
-			pce_log (MSG_ERR,
-				"*** loading drive 0x%02x failed (cow)\n",
-				drive
-			);
+// 		if (optional == 0) {
+// 			pce_log (MSG_ERR,
+// 				"*** loading drive 0x%02x failed (cow)\n",
+// 				drive
+// 			);
 
-			return (1);
-		}
+// 			return (1);
+// 		}
 
-		return (0);
-	}
+// 		return (0);
+// 	}
 
-	*ret = dsk;
+// 	*ret = dsk;
 
-	return (0);
-}
+// 	return (0);
+// }

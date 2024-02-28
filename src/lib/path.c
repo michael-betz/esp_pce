@@ -261,29 +261,3 @@ FILE *pce_fopen_out (const char *fname, const char *mode)
 {
 	return (fopen (fname, mode));
 }
-
-int pce_path_ini (ini_sct_t *sct)
-{
-	const char *str;
-	ini_val_t  *val;
-
-	val = NULL;
-	while (1) {
-		val = ini_next_val (sct, val, "path");
-
-		if (val == NULL) {
-			break;
-		}
-
-		str = ini_val_get_str (val);
-		if (str == NULL) {
-			return (1);
-		}
-
-		if (pce_path_set (str)) {
-			return (1);
-		}
-	}
-
-	return (0);
-}

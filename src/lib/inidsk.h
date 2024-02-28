@@ -33,9 +33,9 @@ int dsk_insert (disks_t *dsks, const char *str, int eject);
 
 disk_t *ini_get_cow (ini_sct_t *sct, disk_t *dsk);
 
-int ini_get_disk (ini_sct_t *sct, disk_t **ret);
+// int ini_get_disk (ini_sct_t *sct, disk_t **ret);
 
-disks_t *ini_get_disks ();
+// disks_t *ini_get_disks ();
 
 
 #endif

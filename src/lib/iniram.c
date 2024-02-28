@@ -31,6 +31,10 @@
 #include <pce-mac-plus.cfg.h>
 #include "esp_port.h"
 
+#ifndef SDL_SIM
+	#define SDL_SIM 0
+#endif
+
 
 int ini_get_ram (memory_t *mem, mem_blk_t **addr0)
 {
@@ -69,19 +73,26 @@ int ini_get_rom (memory_t *mem)
 		ROM_ADDRESS, ROM_SIZE, ROM_PARTITION_NAME
 	);
 
-	rom = mem_blk_new (ROM_ADDRESS, ROM_SIZE, 0);
-
+	rom = mem_blk_new (ROM_ADDRESS, ROM_SIZE, SDL_SIM);
 	if (rom == NULL) {
 		pce_log (MSG_ERR, "*** memory block creation failed\n");
 		return (1);
 	}
 
+	#ifdef SDL_SIM
+		mem_blk_clear (rom, 0);
+		if (pce_load_blk_bin (rom, "rom.img")) {
+			pce_log (MSG_ERR, "*** loading rom failed (rom.bin)\n");
+			return (1);
+		}
+	#else
+		// map ESP partition from flash into memory
+		if (map_partition(rom, ROM_SIZE, ROM_PARTITION_NAME))
+			return (1);
+	#endif
+
 	mem_blk_set_readonly (rom, 1);
 	mem_add_blk (mem, rom, 1);
-
-	// map partition from flash into memory
-	if (map_partition(rom, ROM_SIZE, ROM_PARTITION_NAME))
-		return (1);
 
 	return (0);
 }

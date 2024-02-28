@@ -69,10 +69,4 @@ FILE *pce_fopen_inp (const char *fname, const char *mode, char **path);
 
 FILE *pce_fopen_out (const char *fname, const char *mode);
 
-/*!***************************************************************************
- * @short Add all "path" entries from an ini section to the search path
- *****************************************************************************/
-int pce_path_ini (ini_sct_t *sct);
-
-
 #endif
