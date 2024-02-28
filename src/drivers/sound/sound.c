@@ -30,28 +30,6 @@
 #include <drivers/sound/sound-wav.h>
 
 
-struct snd_drv_list {
-	const char *prefix;
-	sound_drv_t *(*open) (const char *name);
-};
-
-static
-struct snd_drv_list drvtab[] = {
-	{ "null", snd_null_open },
-	{ "wav", snd_null_open },
-
-#ifdef PCE_ENABLE_SOUND_OSS
-	{ "oss", snd_oss_open },
-#endif
-
-#ifdef PCE_ENABLE_SDL
-	{ "sdl", snd_sdl_open },
-#endif
-
-	{ NULL, NULL }
-};
-
-
 /*
  * Initialize the low-pass filter in sdrv->lowpass_iir2 with a cut-off
  * frequency of sdrv->lowpass_freq.
@@ -321,48 +299,25 @@ int snd_set_opts (sound_drv_t *sdrv, unsigned opts, int val)
 }
 
 static
-sound_drv_t *snd_open_sdrv (sound_drv_t *sdrv, const char *name)
+sound_drv_t *snd_open_sdrv (sound_drv_t *sdrv)
 {
 	if (sdrv == NULL) {
 		return (NULL);
 	}
 
-	if (snd_wav_init (sdrv, name)) {
-		snd_close (sdrv);
-		return (NULL);
-	}
-
-	sdrv->wav_filter = drv_get_option_bool (name, "wavfilter", 1);
-
-	sdrv->lowpass_freq = drv_get_option_uint (name, "lowpass", 0);
+	sdrv->wav_filter = 0;
+	sdrv->lowpass_freq = 6000;
 
 	snd_fix_lowpass (sdrv);
 
 	return (sdrv);
 }
 
-sound_drv_t *snd_open (const char *name)
+sound_drv_t *snd_open ()
 {
-	unsigned   i;
-	const char *s, *d;
-
-	i = 0;
-
-	while (drvtab[i].prefix != NULL) {
-		s = name;
-		d = drvtab[i].prefix;
-
-		while ((*d != 0) && (*d == *s)) {
-			d += 1;
-			s += 1;
-		}
-
-		if ((*d == 0) && ((*s == ':') || (*s == 0))) {
-			return (snd_open_sdrv (drvtab[i].open (name), name));
-		}
-
-		i += 1;
-	}
-
-	return (NULL);
+	#ifdef SDL_SIM
+		return (snd_open_sdrv(snd_null_open()));
+	#else
+		return (snd_open_sdrv (snd_sdl_open()));
+	#endif
 }

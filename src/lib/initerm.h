@@ -29,7 +29,7 @@
 #include <drivers/video/terminal.h>
 
 
-terminal_t *ini_get_terminal (ini_sct_t *ini, const char *def);
+terminal_t *ini_get_terminal (const char *def);
 
 
 #endif

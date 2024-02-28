@@ -126,13 +126,13 @@ void mac_sound_set_enable (mac_sound_t *ms, int val)
 	ms->enable = val;
 }
 
-int mac_sound_set_driver (mac_sound_t *ms, const char *driver)
+int mac_sound_set_driver (mac_sound_t *ms)
 {
 	if (ms->drv != NULL) {
 		snd_close (ms->drv);
 	}
 
-	ms->drv = snd_open (driver);
+	ms->drv = snd_open ();
 
 	if (ms->drv == NULL) {
 		return (1);

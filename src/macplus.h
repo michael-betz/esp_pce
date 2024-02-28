@@ -142,13 +142,13 @@ struct macplus_s {
 };
 
 
-void mac_init (macplus_t *sim, ini_sct_t *ini);
+void mac_init (macplus_t *sim);
 
 /*****************************************************************************
  * @short Create a new macplus context
  * @param ini A libini macplus section. Can be NULL.
  *****************************************************************************/
-macplus_t *mac_new (ini_sct_t *ini);
+macplus_t *mac_new ();
 
 void mac_free (macplus_t *sim);
 

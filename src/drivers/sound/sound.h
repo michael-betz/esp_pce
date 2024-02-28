@@ -140,13 +140,11 @@ int snd_set_params (sound_drv_t *sdrv, unsigned chn, unsigned long srate, int si
 int snd_set_opts (sound_drv_t *sdrv, unsigned opts, int val);
 
 
-sound_drv_t *snd_open (const char *name);
+sound_drv_t *snd_open ();
 
-sound_drv_t *snd_null_open (const char *name);
+sound_drv_t *snd_null_open ();
 
-sound_drv_t *snd_oss_open (const char *name);
-
-sound_drv_t *snd_sdl_open (const char *name);
+sound_drv_t *snd_sdl_open ();
 
 
 #endif

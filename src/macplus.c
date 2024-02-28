@@ -1009,55 +1009,47 @@ void mac_setup_scsi (macplus_t *sim)
 // 	}
 // }
 
-// static
-// void mac_setup_sound (macplus_t *sim, ini_sct_t *ini)
-// {
-// 	unsigned long addr;
-// 	unsigned long freq;
-// 	const char    *driver;
-// 	ini_sct_t     *sct;
+static
+void mac_setup_sound (macplus_t *sim)
+{
+	unsigned long addr;
+	unsigned long freq=6000;
+	#ifdef SDL_SIM
+		const char    *driver="SDL";
+	#else
+		const char    *driver="NONE";
+	#endif
 
-// 	mac_sound_init (&sim->sound);
+	mac_sound_init (&sim->sound);
 
-// 	if (sim->ram == NULL) {
-// 		return;
-// 	}
+	if (sim->ram == NULL) {
+		return;
+	}
 
-// 	sct = ini_next_sct (ini, NULL, "sound");
+	addr = mem_blk_get_size (sim->ram);
+	addr = (addr < 0x300) ? 0 : (addr - 0x300);
 
-// 	addr = mem_blk_get_size (sim->ram);
-// 	addr = (addr < 0x300) ? 0 : (addr - 0x300);
+	pce_log_tag (MSG_INF, "SOUND:", "addr=0x%06lX lowpass=%lu driver=%s\n",
+		addr, freq,
+		(driver != NULL) ? driver : "<none>"
+	);
 
-// 	ini_get_uint32 (sct, "address", &addr, addr);
-// 	ini_get_uint32 (sct, "lowpass", &freq, 6000);
-// 	ini_get_string (sct, "driver", &driver, NULL);
+	sim->sbuf1 = addr;
+	sim->sbuf2 = addr - 0x5c00;
 
-// 	pce_log_tag (MSG_INF, "SOUND:", "addr=0x%06lX lowpass=%lu driver=%s\n",
-// 		addr, freq,
-// 		(driver != NULL) ? driver : "<none>"
-// 	);
+	mac_sound_set_sbuf (&sim->sound, mem_blk_get_data (sim->ram) + sim->sbuf1);
 
-// 	sim->sbuf1 = addr;
-// 	sim->sbuf2 = addr - 0x5c00;
+	mac_sound_set_lowpass (&sim->sound, freq);
 
-// 	mac_sound_set_sbuf (&sim->sound, mem_blk_get_data (sim->ram) + sim->sbuf1);
-
-// 	mac_sound_set_lowpass (&sim->sound, freq);
-
-// 	if (driver != NULL) {
-// 		if (mac_sound_set_driver (&sim->sound, driver)) {
-// 			pce_log (MSG_ERR,
-// 				"*** setting sound driver failed (%s)\n",
-// 				driver
-// 			);
-// 		}
-// 	}
-// }
+	if (mac_sound_set_driver (&sim->sound)) {
+		pce_log (MSG_ERR, "*** setting sound driver failed\n");
+	}
+}
 
 static
-void mac_setup_terminal (macplus_t *sim, ini_sct_t *ini)
+void mac_setup_terminal (macplus_t *sim)
 {
-	sim->trm = ini_get_terminal (ini, par_terminal);
+	sim->trm = ini_get_terminal (par_terminal);
 
 	if (sim->trm == NULL) {
 		return;
@@ -1118,7 +1110,7 @@ void mac_setup_video (macplus_t *sim)
 	}
 }
 
-void mac_init (macplus_t *sim, ini_sct_t *ini)
+void mac_init (macplus_t *sim)
 {
 	unsigned i;
 
@@ -1171,8 +1163,8 @@ void mac_init (macplus_t *sim, ini_sct_t *ini)
 	mac_setup_iwm (sim);
 	mac_setup_scsi (sim);
 	// mac_setup_sony (sim, ini);
-	// mac_setup_sound (sim, ini);
-	mac_setup_terminal (sim, ini);
+	mac_setup_sound (sim);
+	mac_setup_terminal (sim);
 	mac_setup_video (sim);
 
 	// pce_load_mem_ini (sim->mem, ini);
@@ -1182,7 +1174,7 @@ void mac_init (macplus_t *sim, ini_sct_t *ini)
 	mac_clock_discontinuity (sim);
 }
 
-macplus_t *mac_new (ini_sct_t *ini)
+macplus_t *mac_new ()
 {
 	macplus_t *sim;
 
@@ -1191,7 +1183,7 @@ macplus_t *mac_new (ini_sct_t *ini)
 		return (NULL);
 	}
 
-	mac_init (sim, ini);
+	mac_init (sim);
 
 	return (sim);
 }

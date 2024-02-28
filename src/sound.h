@@ -63,7 +63,7 @@ void mac_sound_set_volume (mac_sound_t *ms, unsigned vol);
 
 void mac_sound_set_enable (mac_sound_t *ms, int on);
 
-int mac_sound_set_driver (mac_sound_t *ms, const char *driver);
+int mac_sound_set_driver (mac_sound_t *ms);
 
 void mac_sound_vbl (mac_sound_t *ms);
 

@@ -65,7 +65,7 @@ int snd_null_set_params (sound_drv_t *sdrv, unsigned chn, unsigned long srate, i
 }
 
 static
-int snd_null_init (sound_null_t *drv, const char *name)
+int snd_null_init (sound_null_t *drv)
 {
 	snd_init (&drv->sdrv, drv);
 
@@ -76,7 +76,7 @@ int snd_null_init (sound_null_t *drv, const char *name)
 	return (0);
 }
 
-sound_drv_t *snd_null_open (const char *name)
+sound_drv_t *snd_null_open ()
 {
 	sound_null_t *drv;
 
@@ -86,7 +86,7 @@ sound_drv_t *snd_null_open (const char *name)
 		return (NULL);
 	}
 
-	if (snd_null_init (drv, name)) {
+	if (snd_null_init (drv)) {
 		free (drv);
 		return (NULL);
 	}
