@@ -38,7 +38,7 @@ int pce_load_mem_bin (memory_t *mem, const char *fname, unsigned long base);
 
 int pce_load_mem (memory_t *mem, const char *fname, const char *fmt, unsigned long addr);
 
-int pce_load_mem_ini (memory_t *mem, ini_sct_t *ini);
+// int pce_load_mem_ini (memory_t *mem, ini_sct_t *ini);
 
 
 #endif

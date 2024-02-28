@@ -205,8 +205,8 @@ int pce_load_mem (memory_t *mem, const char *fname, const char *fmt, unsigned lo
 	return (1);
 }
 
-int pce_load_mem_ini (memory_t *mem, ini_sct_t *ini)
-{
+// int pce_load_mem_ini (memory_t *mem, ini_sct_t *ini)
+// {
 	// int           r;
 	// const char    *fmt;
 	// const char    *fname = ROM_FILE;
@@ -245,5 +245,5 @@ int pce_load_mem_ini (memory_t *mem, ini_sct_t *ini)
 	// }
 
 	// return (r);
-	return 0;
-}
+	// return 0;
+// }

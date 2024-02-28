@@ -32,6 +32,7 @@
 #include <drivers/video/null.h>
 
 #include <pce-mac-plus.cfg.h>
+#include <../sdl_sim/sdl2.h>
 
 
 terminal_t *ini_get_terminal (ini_sct_t *ini, const char *def)
@@ -39,17 +40,17 @@ terminal_t *ini_get_terminal (ini_sct_t *ini, const char *def)
 	ini_sct_t  *sct = NULL;
 	terminal_t *trm = NULL;
 
-	// trm = sdl2_new (sct);
-
-	// if (trm == NULL) {
-	// 	pce_log (MSG_ERR, "*** setting up sdl2 terminal failed\n");
-	// }
-
-	trm = null_new (sct);
+	trm = sdl2_new ();
 
 	if (trm == NULL) {
-		pce_log (MSG_ERR, "*** setting up null terminal failed\n");
+		pce_log (MSG_ERR, "*** setting up sdl2 terminal failed\n");
 	}
+
+	// trm = null_new (sct);
+
+	// if (trm == NULL) {
+	// 	pce_log (MSG_ERR, "*** setting up null terminal failed\n");
+	// }
 
 	trm_set_escape_str (trm, TERMINAL_ESCAPE);
 	trm_set_scale (trm, TERMINAL_SCALE);

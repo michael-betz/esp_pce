@@ -633,15 +633,15 @@ void mac_setup_mem (macplus_t *sim)
 		return;
 	}
 
-	// sim->ram_ovl = mem_blk_clone (sim->ram);
-	// mem_blk_set_addr (sim->ram_ovl, 0x00600000);
+	sim->ram_ovl = mem_blk_clone (sim->ram);
+	mem_blk_set_addr (sim->ram_ovl, 0x00600000);
 
-	// if (mem_blk_get_size (sim->ram_ovl) > 0x00200000) {
-	// 	mem_blk_set_size (sim->ram_ovl, 0x00200000);
-	// }
+	if (mem_blk_get_size (sim->ram_ovl) > 0x00200000) {
+		mem_blk_set_size (sim->ram_ovl, 0x00200000);
+	}
 
-	// sim->rom_ovl = mem_blk_clone (sim->rom);
-	// mem_blk_set_addr (sim->rom_ovl, 0);
+	sim->rom_ovl = mem_blk_clone (sim->rom);
+	mem_blk_set_addr (sim->rom_ovl, 0);
 
 	sim->overlay = 0;
 
@@ -1069,7 +1069,7 @@ void mac_setup_terminal (macplus_t *sim, ini_sct_t *ini)
 }
 
 static
-void mac_setup_video (macplus_t *sim, ini_sct_t *ini)
+void mac_setup_video (macplus_t *sim)
 {
 	unsigned long addr1;
 	unsigned      i;
@@ -1173,7 +1173,7 @@ void mac_init (macplus_t *sim, ini_sct_t *ini)
 	// mac_setup_sony (sim, ini);
 	// mac_setup_sound (sim, ini);
 	mac_setup_terminal (sim, ini);
-	// mac_setup_video (sim, ini);
+	mac_setup_video (sim);
 
 	// pce_load_mem_ini (sim->mem, ini);
 

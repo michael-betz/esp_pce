@@ -8,7 +8,7 @@
 #define SYSTEM_MODEL "mac-plus"
 
 // Enable or disable the startup memory test.
-#define SYSTEM_MEMTEST 0
+#define SYSTEM_MEMTEST 1
 
 
 // The CPU model. Valid models are "68000" and "68010".
