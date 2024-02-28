@@ -69,9 +69,6 @@ int ini_get_rom (memory_t *mem)
 {
 	mem_blk_t     *rom;
 
-	pce_log_tag (MSG_INF, "ROM:", "addr=0x%08lx size=%lu partition=%s\n",
-		ROM_ADDRESS, ROM_SIZE, ROM_PARTITION_NAME
-	);
 
 	rom = mem_blk_new (ROM_ADDRESS, ROM_SIZE, SDL_SIM);
 	if (rom == NULL) {
@@ -80,12 +77,18 @@ int ini_get_rom (memory_t *mem)
 	}
 
 	#ifdef SDL_SIM
+		pce_log_tag (MSG_INF, "ROM:", "addr=0x%08lx size=%lu file=%s\n",
+			ROM_ADDRESS, ROM_SIZE, ROM_FILE_NAME
+		);
 		mem_blk_clear (rom, 0);
-		if (pce_load_blk_bin (rom, "rom.img")) {
-			pce_log (MSG_ERR, "*** loading rom failed (rom.bin)\n");
+		if (pce_load_blk_bin (rom, ROM_FILE_NAME)) {
+			pce_log (MSG_ERR, "*** loading rom failed (%s)\n", ROM_FILE_NAME);
 			return (1);
 		}
 	#else
+		pce_log_tag (MSG_INF, "ROM:", "addr=0x%08lx size=%lu partition=%s\n",
+			ROM_ADDRESS, ROM_SIZE, ROM_PARTITION_NAME
+		);
 		// map ESP partition from flash into memory
 		if (map_partition(rom, ROM_SIZE, ROM_PARTITION_NAME))
 			return (1);

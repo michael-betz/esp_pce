@@ -32,7 +32,10 @@
 #define RAM_DEFAULT 0x00
 
 
-// Rom is loaded from partition with type 0x40 and subtype 0x01
+// SDL only: Rom is loaded from this file
+#define ROM_FILE_NAME "rom.bin"
+
+// ESP only: Rom is loaded from partition with type 0x40 and subtype 0x01
 #define ROM_PARTITION_NAME "rom"
 
 // The base address
@@ -40,6 +43,13 @@
 
 // The rom size
 #define ROM_SIZE (128 * 1024)
+
+
+// SDL only
+#define DISK_FILE_NAME "hd.img"
+
+// ESP only
+#define DISK_PARTITION_NAME "hd"
 
 
 // Multiple "terminal" sections may be present. The first

@@ -46,7 +46,7 @@
 #include <devices/nvram.h>
 
 #include <drivers/block/block.h>
-
+#include <drivers/block/blkraw.h>
 #include <drivers/video/terminal.h>
 
 #include <lib/brkpt.h>
@@ -660,15 +660,15 @@ void mac_setup_mem (macplus_t *sim)
 static
 void mac_setup_cpu (macplus_t *sim)
 {
-	pce_log_tag (MSG_INF, "CPU:", "model=%s speed=%d\n", SYSTEM_MODEL, CPU_SPEED);
+	pce_log_tag (MSG_INF, "CPU:", "model=%s speed=%d\n", CPU_MODEL, CPU_SPEED);
 
 	sim->cpu = e68_new();
 	if (sim->cpu == NULL) {
 		return;
 	}
 
-	if (mac_set_cpu_model (sim, SYSTEM_MODEL)) {
-		pce_log (MSG_ERR, "*** unknown cpu model (%s)\n", SYSTEM_MODEL);
+	if (mac_set_cpu_model (sim, CPU_MODEL)) {
+		pce_log (MSG_ERR, "*** unknown cpu model (%s)\n", CPU_MODEL);
 	}
 
 	e68_set_mem_fct (sim->cpu, sim->mem,
@@ -894,9 +894,9 @@ void mac_setup_disks (macplus_t *sim)
 	dsks = dsks_new();
 
 	#ifdef SDL_SIM
-		dsk = dsk_img_open("hd.img", 0, 0);
+		dsk = dsk_img_open(DISK_FILE_NAME, 0, 0);
 	#else
-		dsk = flash_disk_init("hd", 0);
+		dsk = flash_disk_init(DISK_PARTITION_NAME, 0);
 	#endif
 
 	if (dsk != NULL)
@@ -1087,7 +1087,7 @@ void mac_setup_video (macplus_t *sim, ini_sct_t *ini)
 
 	sim->vbuf1 = addr1;
 
-	if ((addr1 == addr1) && (addr1 >= 0x8000)) {
+	if (addr1 >= 0x8000) {
 		sim->vbuf2 = addr1 - 0x8000;
 	}
 	else {
