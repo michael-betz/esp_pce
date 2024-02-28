@@ -387,7 +387,7 @@ void sdl2_event_keydown (sdl2_t *sdl, SDL_Scancode key, SDL_Keymod mod)
 		return;
 	}
 
-	if (key == SDL_SCANCODE_GRAVE) {
+	if (key == SDL_SCANCODE_ESCAPE) {
 		if (sdl->grave_down) {
 			return;
 		}
@@ -434,7 +434,7 @@ void sdl2_event_keyup (sdl2_t *sdl, SDL_Scancode key, SDL_Keymod mod)
 
 	pcekey = sdl2_map_key (sdl, key);
 
-	if (key == SDL_SCANCODE_GRAVE) {
+	if (key == SDL_SCANCODE_ESCAPE) {
 		if (sdl->grave_down) {
 			sdl->grave_down = 0;
 			return;
