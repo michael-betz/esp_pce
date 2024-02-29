@@ -899,9 +899,25 @@ void mac_setup_disks (macplus_t *sim)
 		dsk = flash_disk_init(DISK_PARTITION_NAME, 0);
 	#endif
 
-	if (dsk != NULL)
-		dsks_add_disk (dsks, dsk);
+	if (dsk == NULL) {
+		pce_log_tag (MSG_ERR, "DISK:", "couldn't get disk\n");
+		return;
+	}
 
+	dsk_set_drive (dsk, DISK_DRIVE);
+
+	pce_log_tag (MSG_INF,
+		"DISK:", "drive=%u type=image blocks=%lu chs=%lu/%lu/%lu %s %s\n",
+		dsk->drive,
+		(unsigned long) dsk->blocks,
+		(unsigned long) dsk->c,
+		(unsigned long) dsk->h,
+		(unsigned long) dsk->s,
+		(dsk->readonly ? "ro" : "rw"),
+		dsk->fname
+	);
+
+	dsks_add_disk (dsks, dsk);
 	sim->dsks = dsks;
 }
 
@@ -968,46 +984,13 @@ void mac_setup_scsi (macplus_t *sim)
 	);
 }
 
-// static
-// void mac_setup_sony (macplus_t *sim, ini_sct_t *ini)
-// {
-// 	unsigned  i;
-// 	int       format_hd_as_dd;
-// 	char      var[32];
-// 	unsigned  def, val;
-// 	ini_sct_t *sct;
-
-// 	sct = ini_next_sct (ini, NULL, "sony");
-
-// 	ini_get_uint16 (sct, "insert_delay", &def, 0);
-// 	ini_get_bool (sct, "format_hd_as_dd", &format_hd_as_dd, 0);
-
-// 	mac_sony_init (&sim->sony, sct != NULL);
-// 	mac_sony_set_mem (&sim->sony, sim->mem);
-// 	mac_sony_set_disks (&sim->sony, sim->dsks);
-
-// 	sim->sony.format_hd_as_dd = format_hd_as_dd;
-
-// 	if (sct == NULL) {
-// 		return;
-// 	}
-
-// 	for (i = 0; i < SONY_DRIVES; i++) {
-// 		if (par_disk_boot & (1U << i)) {
-// 			val = 1;
-// 		}
-// 		else {
-// 			sprintf (var, "insert_delay_%u", i + 1);
-// 			ini_get_uint16 (sct, var, &val, def);
-// 		}
-
-// 		mac_sony_set_delay (&sim->sony, i, val);
-
-// 		pce_log_tag (MSG_INF, "SONY:", "drive=%u delay=%lu\n",
-// 			i + 1, val
-// 		);
-// 	}
-// }
+static
+void mac_setup_sony (macplus_t *sim)
+{
+	mac_sony_init (&sim->sony, 0);
+	mac_sony_set_mem (&sim->sony, sim->mem);
+	mac_sony_set_disks (&sim->sony, sim->dsks);
+}
 
 static
 void mac_setup_sound (macplus_t *sim)
@@ -1162,12 +1145,10 @@ void mac_init (macplus_t *sim)
 	mac_setup_disks (sim);
 	mac_setup_iwm (sim);
 	mac_setup_scsi (sim);
-	// mac_setup_sony (sim, ini);
+	mac_setup_sony (sim);
 	mac_setup_sound (sim);
 	mac_setup_terminal (sim);
 	mac_setup_video (sim);
-
-	// pce_load_mem_ini (sim->mem, ini);
 
 	trm_set_msg_trm (sim->trm, "term.title", "pce-macplus");
 

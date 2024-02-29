@@ -204,33 +204,33 @@ void mac_log_deb (const char *msg, ...)
 	va_end (va);
 }
 
-void app_main ()
-{
-	pce_log_init();
-	pce_log_add_fp (stderr, 0, MSG_DEB);
+// void app_main ()
+// {
+// 	pce_log_init();
+// 	pce_log_add_fp (stderr, 0, MSG_DEB);
 
-	mac_log_banner();
+// 	mac_log_banner();
 
-	atexit (mac_atexit);
+// 	atexit (mac_atexit);
 
-	pce_console_init (stdin, stdout);
+// 	pce_console_init (stdin, stdout);
 
-	par_sim = mac_new (NULL);
+// 	par_sim = mac_new (NULL);
 
-	mon_init (&par_mon);
-	mon_set_cmd_fct (&par_mon, mac_cmd, par_sim);
-	mon_set_msg_fct (&par_mon, mac_set_msg, par_sim);
-	mon_set_get_mem_fct (&par_mon, par_sim->mem, mem_get_uint8);
-	mon_set_set_mem_fct (&par_mon, par_sim->mem, mem_set_uint8);
-	mon_set_set_memrw_fct (&par_mon, par_sim->mem, mem_set_uint8_rw);
-	mon_set_memory_mode (&par_mon, 0);
+// 	mon_init (&par_mon);
+// 	mon_set_cmd_fct (&par_mon, mac_cmd, par_sim);
+// 	mon_set_msg_fct (&par_mon, mac_set_msg, par_sim);
+// 	mon_set_get_mem_fct (&par_mon, par_sim->mem, mem_get_uint8);
+// 	mon_set_set_mem_fct (&par_mon, par_sim->mem, mem_set_uint8);
+// 	mon_set_set_memrw_fct (&par_mon, par_sim->mem, mem_set_uint8_rw);
+// 	mon_set_memory_mode (&par_mon, 0);
 
-	cmd_init (par_sim, cmd_get_sym, cmd_set_sym);
-	mac_cmd_init (par_sim, &par_mon);
+// 	cmd_init (par_sim, cmd_get_sym, cmd_set_sym);
+// 	mac_cmd_init (par_sim, &par_mon);
 
-	mac_reset (par_sim);
+// 	mac_reset (par_sim);
 
-}
+// }
 
 int main (int argc, char *argv[])
 {
@@ -243,7 +243,7 @@ int main (int argc, char *argv[])
 	nomon = 0;
 
 	pce_log_init();
-	pce_log_add_fp (stderr, 0, MSG_INF);
+	pce_log_add_fp (stderr, 0, MSG_DEB);
 
 	while (1) {
 		r = pce_getopt (argc, argv, &optarg, opts);

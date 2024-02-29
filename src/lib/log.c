@@ -144,6 +144,7 @@ void pce_log (unsigned level, const char *msg, ...)
 	unsigned i;
 	va_list va;
 
+
 	for (i = 0; i < par_log_cnt; i++) {
 		if (level <= par_log[i].level) {
 			va_start (va, msg);

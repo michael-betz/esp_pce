@@ -8,7 +8,7 @@
 #define SYSTEM_MODEL "mac-plus"
 
 // Enable or disable the startup memory test.
-#define SYSTEM_MEMTEST 1
+#define SYSTEM_MEMTEST 0
 
 
 // The CPU model. Valid models are "68000" and "68010".
@@ -50,6 +50,9 @@
 
 // ESP only
 #define DISK_PARTITION_NAME "hd"
+
+// Need to match SCSI_DEVICE<N>_DRIVE
+#define DISK_DRIVE 128
 
 
 // Multiple "terminal" sections may be present. The first

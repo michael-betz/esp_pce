@@ -92,6 +92,10 @@ void mac_scsi_init (mac_scsi_t *scsi)
 {
 	unsigned i;
 
+	#ifdef DEBUG_SCSI
+		mac_log_deb ("scsi: mac_scsi_init()\n");
+	#endif
+
 	scsi->phase = E5380_PHASE_FREE;
 
 	scsi->odr = 0x00;
@@ -1374,7 +1378,7 @@ void mac_scsi_set_uint16 (void *ext, unsigned long addr, unsigned short val)
 void mac_scsi_reset (mac_scsi_t *scsi)
 {
 #ifdef DEBUG_SCSI
-	pce_log_deb ("scsi: reset\n");
+	mac_log_deb ("scsi: reset\n");
 #endif
 
 	scsi->phase = E5380_PHASE_FREE;
