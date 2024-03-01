@@ -42,7 +42,7 @@
 #define ROM_ADDRESS 0x400000
 
 // The rom size
-#define ROM_SIZE (128 * 1024)
+#define ROM_SIZE (129 * 1024)
 
 
 // SDL only
@@ -153,13 +153,6 @@
 #define IWM_DRIVE1_INSERTED     0
 #define IWM_DRIVE1_SINGLE_SIDED 0
 #define IWM_DRIVE1_AUTO_ROTATE  1
-
-#define IWM_DRIVE2_DRIVE        3
-#define IWM_DRIVE2_DISK         3
-#define IWM_DRIVE2_INSERTED     0
-#define IWM_DRIVE2_SINGLE_SIDED 0
-#define IWM_DRIVE2_AUTO_ROTATE  1
-
 
 // The SCSI ID
 #define SCSI_DEVICE0_ID 6
