@@ -1,6 +1,6 @@
 LDLIBS = -lm -lSDL2 -lstdc++
 
-CFLAGS += -g -Wall -I../src -DSDL_SIM=1 -DDEBUG_SCSI=1
+CFLAGS += -g -Wall -I../src -DSDL_SIM=1
 
 ALL_SRCS_ = $(wildcard *.c) $(wildcard ../src/*.c) $(wildcard ../src/*/*.c) $(wildcard ../src/*/*/*.c)
 ALL_SRCS = $(filter-out ../src/esp_port.c,$(ALL_SRCS_))

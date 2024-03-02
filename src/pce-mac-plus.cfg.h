@@ -42,7 +42,7 @@
 #define ROM_ADDRESS 0x400000
 
 // The rom size
-#define ROM_SIZE (129 * 1024)
+#define ROM_SIZE (128 * 1024 + 1)
 
 
 // SDL only

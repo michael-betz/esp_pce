@@ -37,7 +37,6 @@
 
 terminal_t *ini_get_terminal (const char *def)
 {
-	ini_sct_t  *sct = NULL;
 	terminal_t *trm = NULL;
 
 	#ifdef SDL_SIM

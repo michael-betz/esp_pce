@@ -50,7 +50,6 @@
 #include <drivers/video/terminal.h>
 
 #include <lib/brkpt.h>
-#include <lib/inidsk.h>
 #include <lib/iniram.h>
 #include <lib/initerm.h>
 #include <lib/load.h>
