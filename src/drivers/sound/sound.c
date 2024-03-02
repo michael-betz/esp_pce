@@ -316,8 +316,8 @@ sound_drv_t *snd_open_sdrv (sound_drv_t *sdrv)
 sound_drv_t *snd_open ()
 {
 	#ifdef SDL_SIM
-		return (snd_open_sdrv(snd_null_open()));
-	#else
 		return (snd_open_sdrv (snd_sdl_open()));
+	#else
+		return (snd_open_sdrv(snd_null_open()));
 	#endif
 }

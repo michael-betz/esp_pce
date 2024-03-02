@@ -62,5 +62,4 @@ int cmd_match_uint16_16 (cmd_t *cmd, unsigned short *seg, unsigned short *ofs);
 
 void cmd_init (void *ext, void *getsym, void *setsym);
 
-
 #endif

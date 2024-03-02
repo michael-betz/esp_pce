@@ -1,13 +1,28 @@
 #include <drivers/video/terminal.h>
 #include <drivers/video/null.h>
-#include <devices/memory.h>
 #include <drivers/block/block.h>
+
+#include <devices/memory.h>
+
 #include <lib/log.h>
+#include <lib/console.h>
+#include <lib/monitor.h>
+#include <lib/cmd.h>
+#include <lib/sysdep.h>
 
 #include "main.h"
+#include "cmd_68k.h"
 #include "macplus.h"
+#include "msg.h"
+#include "sony.h"
 
 #include "esp_partition.h"
+
+
+monitor_t  par_mon;
+const char *par_terminal = NULL;
+macplus_t  *par_sim = NULL;
+
 
 // Maps a flash partition to a PCE memory-block
 int map_partition (mem_blk_t *blk, unsigned long size, const char* part_name)
@@ -142,4 +157,32 @@ void app_main(void)
 	pce_log_add_fp (stderr, 0, MSG_DEB);
 	mac_log_banner();
 
+	pce_console_init (stdin, stdout);
+
+	par_sim = mac_new (NULL);
+
+	mon_init (&par_mon);
+	mon_set_cmd_fct (&par_mon, mac_cmd, par_sim);
+	mon_set_msg_fct (&par_mon, mac_set_msg, par_sim);
+	mon_set_get_mem_fct (&par_mon, par_sim->mem, mem_get_uint8);
+	mon_set_set_mem_fct (&par_mon, par_sim->mem, mem_set_uint8);
+	mon_set_set_memrw_fct (&par_mon, par_sim->mem, mem_set_uint8_rw);
+	mon_set_memory_mode (&par_mon, 0);
+
+	cmd_init (par_sim, cmd_get_sym_mac, cmd_set_sym_mac);
+	mac_cmd_init (par_sim, &par_mon);
+
+	mac_reset (par_sim);
+
+	mac_run (par_sim);
+
+	// pce_puts ("type 'h' for help\n");
+	// if (par_sim->brk != PCE_BRK_ABORT) {
+	// 	mon_run (&par_mon);
+	// }
+
+	mac_del (par_sim);
+	mon_free (&par_mon);
+	pce_console_done();
+	pce_log_done();
 }

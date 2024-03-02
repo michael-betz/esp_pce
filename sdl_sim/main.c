@@ -128,26 +128,6 @@ void mac_atexit (void)
 	pce_set_fd_interactive (0, 1);
 }
 
-static
-int cmd_get_sym (macplus_t *sim, const char *sym, unsigned long *val)
-{
-	if (e68_get_reg (sim->cpu, sym, val) == 0) {
-		return (0);
-	}
-
-	return (1);
-}
-
-static
-int cmd_set_sym (macplus_t *sim, const char *sym, unsigned long val)
-{
-	if (e68_set_reg (sim->cpu, sym, val) == 0) {
-		return (0);
-	}
-
-	return (1);
-}
-
 void sim_stop (void)
 {
 	macplus_t *sim = par_sim;
@@ -165,25 +145,6 @@ void mac_stop (macplus_t *sim)
 	}
 
 	mac_set_msg (sim, "emu.stop", NULL);
-}
-
-void mac_log_deb (const char *msg, ...)
-{
-	va_list       va;
-	unsigned long pc;
-
-	if (par_sim != NULL) {
-		pc = e68_get_last_pc (par_sim->cpu, 0);
-	}
-	else {
-		pc = 0;
-	}
-
-	pce_log (MSG_DEB, "[%06lX] ", pc & 0xffffff);
-
-	va_start (va, msg);
-	pce_log_va (MSG_DEB, msg, va);
-	va_end (va);
 }
 
 // void app_main ()
@@ -316,7 +277,7 @@ int main (int argc, char *argv[])
 	mon_set_set_memrw_fct (&par_mon, par_sim->mem, mem_set_uint8_rw);
 	mon_set_memory_mode (&par_mon, 0);
 
-	cmd_init (par_sim, cmd_get_sym, cmd_set_sym);
+	cmd_init (par_sim, cmd_get_sym_mac, cmd_set_sym_mac);
 	mac_cmd_init (par_sim, &par_mon);
 
 	mac_reset (par_sim);

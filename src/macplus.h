@@ -193,4 +193,6 @@ terminal_t *ini_get_terminal (const char *def);
 void print_version (void);
 void mac_log_banner (void);
 
+int cmd_get_sym_mac(macplus_t *sim, const char *sym, unsigned long *val);
+int cmd_set_sym_mac(macplus_t *sim, const char *sym, unsigned long val);
 #endif

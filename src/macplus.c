@@ -1519,3 +1519,40 @@ void mac_log_banner (void)
 		"Copyright (C) 2007-" PCE_YEAR " Hampa Hug <hampa@hampa.ch>\n"
 	);
 }
+
+void mac_log_deb (const char *msg, ...)
+{
+	va_list       va;
+	unsigned long pc;
+
+	if (par_sim != NULL) {
+		pc = e68_get_last_pc (par_sim->cpu, 0);
+	}
+	else {
+		pc = 0;
+	}
+
+	pce_log (MSG_DEB, "[%06lX] ", pc & 0xffffff);
+
+	va_start (va, msg);
+	pce_log_va (MSG_DEB, msg, va);
+	va_end (va);
+}
+
+int cmd_get_sym_mac(macplus_t *sim, const char *sym, unsigned long *val)
+{
+	if (e68_get_reg (sim->cpu, sym, val) == 0) {
+		return (0);
+	}
+
+	return (1);
+}
+
+int cmd_set_sym_mac(macplus_t *sim, const char *sym, unsigned long val)
+{
+	if (e68_set_reg (sim->cpu, sym, val) == 0) {
+		return (0);
+	}
+
+	return (1);
+}
