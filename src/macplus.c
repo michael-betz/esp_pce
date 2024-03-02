@@ -51,7 +51,6 @@
 
 #include <lib/brkpt.h>
 #include <lib/iniram.h>
-#include <lib/initerm.h>
 #include <lib/load.h>
 #include <lib/log.h>
 #include <lib/sysdep.h>
@@ -1037,6 +1036,12 @@ void mac_setup_terminal (macplus_t *sim)
 		return;
 	}
 
+	trm_set_escape_str (sim->trm, TERMINAL_ESCAPE);
+	trm_set_scale (sim->trm, TERMINAL_SCALE);
+	trm_set_min_size (sim->trm, 512, 384);
+	trm_set_aspect_ratio (sim->trm, TERMINAL_ASPECT_X, TERMINAL_ASPECT_Y);
+	trm_set_mouse_scale (sim->trm, TERMINAL_MOUSE_MUL_X, TERMINAL_MOUSE_DIV_X, TERMINAL_MOUSE_MUL_Y, TERMINAL_MOUSE_DIV_Y);
+
 	trm_set_msg_fct (sim->trm, sim, mac_set_msg);
 	trm_set_key_fct (sim->trm, sim, mac_set_key);
 	trm_set_mouse_fct (sim->trm, sim, mac_set_mouse);
@@ -1493,4 +1498,24 @@ void mac_clock (macplus_t *sim, unsigned n)
 	mac_realtime_sync (sim, sim->clk_div[3]);
 
 	sim->clk_div[3] = 0;
+}
+
+void print_version (void)
+{
+	fputs (
+		"pce-macplus version " PCE_VERSION_STR
+		"\n\n"
+		"Copyright (C) 2007-" PCE_YEAR " Hampa Hug <hampa@hampa.ch>\n",
+		stdout
+	);
+
+	fflush (stdout);
+}
+
+void mac_log_banner (void)
+{
+	pce_log_inf (
+		"pce-macplus version " PCE_VERSION_STR "\n"
+		"Copyright (C) 2007-" PCE_YEAR " Hampa Hug <hampa@hampa.ch>\n"
+	);
 }

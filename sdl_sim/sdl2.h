@@ -70,11 +70,6 @@ typedef struct {
 	sdl2_keymap_t *keymap;
 } sdl2_t;
 
-
-/*!***************************************************************************
- * @short Create a new SDL2 terminal
- *****************************************************************************/
-terminal_t *sdl2_new ();
-
+void sdl2_init (sdl2_t *sdl);
 
 #endif

@@ -767,7 +767,6 @@ int sdl2_close (sdl2_t *sdl)
 	return (0);
 }
 
-static
 void sdl2_init (sdl2_t *sdl)
 {
 	trm_init (&sdl->trm, sdl);
@@ -808,17 +807,4 @@ void sdl2_init (sdl2_t *sdl)
 	// sdl2_init_keymap_user (sdl, sct);
 
 	SDL_SetHint (SDL_HINT_MOUSE_FOCUS_CLICKTHROUGH, "1");
-}
-
-terminal_t *sdl2_new ()
-{
-	sdl2_t *sdl;
-
-	if ((sdl = malloc (sizeof (sdl2_t))) == NULL) {
-		return (NULL);
-	}
-
-	sdl2_init (sdl);
-
-	return (&sdl->trm);
 }

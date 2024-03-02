@@ -46,7 +46,7 @@
 
 
 // SDL only
-#define DISK_FILE_NAME "hd6.img"
+#define DISK_FILE_NAME "hd7.img"
 
 // ESP only
 #define DISK_PARTITION_NAME "hd"

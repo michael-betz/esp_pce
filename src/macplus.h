@@ -188,4 +188,9 @@ void mac_reset (macplus_t *sim);
 void mac_clock (macplus_t *sim, unsigned n);
 
 
+
+terminal_t *ini_get_terminal (const char *def);
+void print_version (void);
+void mac_log_banner (void);
+
 #endif

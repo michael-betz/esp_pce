@@ -25,6 +25,7 @@
 #include "macplus.h"
 #include "msg.h"
 #include "sony.h"
+#include "sdl2.h"
 
 #include <stdarg.h>
 #include <time.h>
@@ -39,6 +40,9 @@
 #include <lib/monitor.h>
 #include <lib/path.h>
 #include <lib/sysdep.h>
+
+#include <drivers/video/terminal.h>
+#include <drivers/video/null.h>
 
 #include <lib/libini.h>
 #include <SDL2/SDL.h>
@@ -87,28 +91,6 @@ void print_help (void)
 	);
 
 	fflush (stdout);
-}
-
-static
-void print_version (void)
-{
-	fputs (
-		"pce-macplus version " PCE_VERSION_STR
-		"\n\n"
-		"Copyright (C) 2007-" PCE_YEAR " Hampa Hug <hampa@hampa.ch>\n",
-		stdout
-	);
-
-	fflush (stdout);
-}
-
-static
-void mac_log_banner (void)
-{
-	pce_log_inf (
-		"pce-macplus version " PCE_VERSION_STR "\n"
-		"Copyright (C) 2007-" PCE_YEAR " Hampa Hug <hampa@hampa.ch>\n"
-	);
 }
 
 void sig_int (int s)
@@ -369,4 +351,24 @@ int main (int argc, char *argv[])
 	pce_log_done();
 
 	return (0);
+}
+
+terminal_t *ini_get_terminal (const char *def)
+{
+	terminal_t *trm = NULL;
+	sdl2_t *sdl;
+
+	if ((sdl = malloc (sizeof (sdl2_t))) == NULL) {
+		return (NULL);
+	}
+
+	sdl2_init (sdl);
+
+	trm = &sdl->trm;
+
+	if (trm == NULL) {
+		pce_log (MSG_ERR, "*** setting up sdl2 terminal failed\n");
+	}
+
+	return (trm);
 }

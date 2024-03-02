@@ -1,10 +1,15 @@
+#include <drivers/video/terminal.h>
+#include <drivers/video/null.h>
 #include <devices/memory.h>
 #include <drivers/block/block.h>
 #include <lib/log.h>
 
+#include "main.h"
+#include "macplus.h"
+
 #include "esp_partition.h"
 
-
+// Maps a flash partition to a PCE memory-block
 int map_partition (mem_blk_t *blk, unsigned long size, const char* part_name)
 {
 	const esp_partition_t *part = NULL;
@@ -84,7 +89,7 @@ static int dsk_part_write (disk_t *dsk, const void *buf, uint32_t i, uint32_t n)
 	if (esp_partition_write(part, lbaStart * 512, secdat, erase_size) != ESP_OK)
 		return 1;
 
-	free(secdat);
+	// free(secdat);
 
 	return (0);
 }
@@ -102,7 +107,7 @@ disk_t *flash_disk_init(const char *part_name, unsigned drive_id)
 		return (NULL);
 	}
 
-	dsk_init (dsk, part, part->size / 512, 0, 0, 0);
+	dsk_init (dsk, (void *)part, part->size / 512, 0, 0, 0);
 	dsk_set_type (dsk, PCE_DISK_RAW);
 	dsk_set_readonly (dsk, 0);
 	dsk_set_fname (dsk, part->label);
@@ -112,4 +117,29 @@ disk_t *flash_disk_init(const char *part_name, unsigned drive_id)
 
 	dsk_set_drive (dsk, drive_id);
 	return dsk;
+}
+
+
+terminal_t *ini_get_terminal (const char *def)
+{
+	terminal_t *trm = NULL;
+
+	trm = null_new (NULL);
+
+	if (trm == NULL) {
+		pce_log (MSG_ERR, "*** setting up null terminal failed\n");
+	}
+
+	return (trm);
+}
+
+
+void app_main(void)
+{
+	printf("Hello, this is esp_pce!\n");
+
+	pce_log_init();
+	pce_log_add_fp (stderr, 0, MSG_DEB);
+	mac_log_banner();
+
 }
