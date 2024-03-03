@@ -24,8 +24,8 @@
 #define PCE_MACPLUS_SONY_H 1
 
 
-#include <devices/memory.h>
-#include <drivers/block/block.h>
+#include "devices/memory.h"
+#include "drivers/block/block.h"
 
 
 #define SONY_DRIVES 8

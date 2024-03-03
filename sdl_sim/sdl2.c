@@ -796,7 +796,7 @@ void sdl2_init (sdl2_t *sdl)
 
 	sdl->grab = 0;
 
-	sdl->report_keys = 0;
+	sdl->report_keys = 1;
 
 	sdl->autosize = 1;
 

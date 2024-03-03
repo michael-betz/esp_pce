@@ -24,7 +24,7 @@
 #define PCE_MACPLUS_VIDEO_H 1
 
 
-#include <drivers/video/terminal.h>
+#include "drivers/video/terminal.h"
 
 
 typedef struct {

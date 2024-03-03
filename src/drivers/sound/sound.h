@@ -27,7 +27,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#include <drivers/sound/filter.h>
+#include "filter.h"
 
 
 #define SND_CHN_MAX 16

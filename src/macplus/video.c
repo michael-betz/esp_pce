@@ -50,17 +50,19 @@ int mac_video_init (mac_video_t *mv, unsigned w, unsigned h)
 
 	mv->cmp_cnt = 8;
 
-	mv->vcmp = malloc ((unsigned long) ((mv->w + 7) / 8) * mv->h);
-
+	unsigned long tmp_size = (unsigned long) ((mv->w + 7) / 8) * mv->h;
+	mv->vcmp = malloc (tmp_size);
 	if (mv->vcmp == NULL) {
 		return (1);
 	}
+	memset(mv->vcmp, 0, tmp_size);
 
-	mv->rgb = malloc (3UL * (unsigned long) w * mv->cmp_cnt);
-
+	tmp_size = 3UL * (unsigned long) w * mv->cmp_cnt;
+	mv->rgb = malloc (tmp_size);
 	if (mv->rgb == NULL) {
 		return (1);
 	}
+	memset(mv->rgb, 0, tmp_size);
 
 	mv->brightness = 255;
 

@@ -24,7 +24,7 @@
 #define PCE_MACPLUS_SOUND_H 1
 
 
-#include <drivers/sound/sound.h>
+#include "drivers/sound/sound.h"
 
 
 typedef struct {

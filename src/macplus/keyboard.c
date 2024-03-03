@@ -84,8 +84,13 @@ static mac_kbd_map_t key_map_us[] = {
 	{ PCE_KEY_COMMA,      1, { 0x57 }, 1, { 0xd7 } },
 	{ PCE_KEY_PERIOD,     1, { 0x5f }, 1, { 0xdf } },
 	{ PCE_KEY_SLASH,      1, { 0x59 }, 1, { 0xd9 } },
-	{ PCE_KEY_LCTRL,      1, { 0x75 }, 1, { 0xf5 } },
-	{ PCE_KEY_RCTRL,      1, { 0x75 }, 1, { 0xf5 } },
+
+	{ PCE_KEY_LCTRL,      1, { 0x75 }, 1, { 0xf5 } },  // Option key
+	{ PCE_KEY_LALT,       1, { 0x6f }, 1, { 0xef } },  // Mac key
+	{ PCE_KEY_LSUPER,     1, { 0x6f }, 1, { 0xef } },  // Mac key
+	{ PCE_KEY_RALT,       1, { 0x69 }, 1, { 0xe9 } },  // Enter key
+	{ PCE_KEY_RCTRL,      1, { 0x75 }, 1, { 0xf5 } },  // Option key
+
 	{ PCE_KEY_LALT,       1, { 0x6f }, 1, { 0xef } },
 	{ PCE_KEY_RALT,       1, { 0x69 }, 1, { 0xe9 } },
 	{ PCE_KEY_SPACE,      1, { 0x63 }, 1, { 0xe3 } },

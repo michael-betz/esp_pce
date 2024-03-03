@@ -22,6 +22,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "e8530.h"
 
@@ -38,6 +39,9 @@ void e8530_init_chn (e8530_t *scc, unsigned chn)
 	e8530_chn_t *c;
 
 	c = &scc->chn[chn];
+
+	memset(c->rr, 0, sizeof(c->rr));
+	memset(c->wr, 0, sizeof(c->wr));
 
 	c->txd_empty = 1;
 	c->rxd_empty = 1;

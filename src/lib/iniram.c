@@ -29,7 +29,7 @@
 #include <lib/libini.h>
 
 #include <pce-mac-plus.cfg.h>
-#include "esp_port.h"
+#include "esp/esp_port.h"
 
 #ifndef SDL_SIM
 	#define SDL_SIM 0

@@ -104,7 +104,7 @@
 #define ADB_MOUSE true
 
 // Enable the ADB extended keyboard
-#define ADB_KEYBOARD true
+#define ADB_KEYBOARD false
 
 // Map keypad keys to motion keys
 #define ADB_KEYPAD_MOTION false

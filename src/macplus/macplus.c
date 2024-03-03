@@ -57,7 +57,7 @@
 
 #include <lib/libini.h>
 #include <pce-mac-plus.cfg.h>
-#include "esp_port.h"
+#include "esp/esp_port.h"
 
 
 /* The CPU is synchronized with real time MAC_CPU_SYNC times per seconds */
@@ -696,6 +696,9 @@ void mac_setup_via (macplus_t *sim)
 
 	pce_log_tag (MSG_INF, "VIA:", "addr=0x%06lx size=0x%lx\n", addr, size);
 
+	sim->via_port_a = 0;
+	sim->via_port_b = 0;
+
 	e6522_init (&sim->via, 9);
 
 	e6522_set_irq_fct (&sim->via, sim, mac_interrupt_via);
@@ -1123,6 +1126,7 @@ void mac_init (macplus_t *sim)
 	sim->speed_factor = 1;
 	sim->speed_limit[0] = 1;
 	sim->speed_clock_extra = 0;
+	sim->sync_sleep = 0;
 
 	for (i = 1; i < PCE_MAC_SPEED_CNT; i++) {
 		sim->speed_limit[i] = 0;
@@ -1184,8 +1188,6 @@ void mac_free (macplus_t *sim)
 			sim->rtc_fname
 		);
 	}
-
-	free (sim->rtc_fname);
 
 	mac_video_del (sim->video);
 	trm_del (sim->trm);
