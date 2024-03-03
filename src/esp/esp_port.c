@@ -18,6 +18,9 @@
 
 #include "esp_partition.h"
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 
 monitor_t  par_mon;
 const char *par_terminal = NULL;
@@ -149,10 +152,8 @@ terminal_t *ini_get_terminal (const char *def)
 }
 
 
-void app_main(void)
+void emu_task(void *pvParameters)
 {
-	printf("Hello, this is esp_pce!\n");
-
 	pce_log_init();
 	pce_log_add_fp (stderr, 0, MSG_DEB);
 	mac_log_banner();
@@ -185,4 +186,15 @@ void app_main(void)
 	mon_free (&par_mon);
 	pce_console_done();
 	pce_log_done();
+
+    vTaskDelete(NULL);
+}
+
+
+void app_main(void)
+{
+	printf("Hello, this is esp_pce!\n");
+
+	printf("Starting emu_task...\n");
+	xTaskCreatePinnedToCore(&emu_task, "emu", 6 * 1024, NULL, 5, NULL, 0);
 }
