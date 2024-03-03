@@ -27,6 +27,8 @@
 #include "e68000.h"
 #include "internal.h"
 
+//We need speed here!
+#pragma GCC optimize ("O3")
 
 typedef void (*e68_dasm_f) (e68_dasm_t *da, const uint8_t *src);
 

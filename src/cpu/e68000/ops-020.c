@@ -23,6 +23,8 @@
 #include "e68000.h"
 #include "internal.h"
 
+//We need speed here!
+#pragma GCC optimize ("O3")
 
 static void e68_op_undefined (e68000_t *c)
 {

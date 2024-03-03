@@ -29,7 +29,7 @@
 int mem_blk_init (mem_blk_t *blk, unsigned long base, unsigned long size, int alloc)
 {
 	if (alloc) {
-		blk->data = malloc (size + 16);
+		blk->data = malloc (size);
 		if (blk->data == NULL) {
 			return (1);
 		}

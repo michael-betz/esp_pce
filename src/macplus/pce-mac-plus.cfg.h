@@ -26,7 +26,7 @@
 #define RAM_ADDRESS 0
 
 // The memory block size
-#define RAM_SIZE (4096 * 1024)
+#define RAM_SIZE (2048 * 1024)
 
 // The memory block is initialized with this value.
 #define RAM_DEFAULT 0x00
@@ -42,7 +42,7 @@
 #define ROM_ADDRESS 0x400000
 
 // The rom size
-#define ROM_SIZE (128 * 1024 + 1)
+#define ROM_SIZE (256 * 1024)
 
 
 // SDL only

@@ -27,6 +27,8 @@
 #include "e68000.h"
 #include "internal.h"
 
+//We need speed here!
+#pragma GCC optimize ("O3")
 
 /*
  * valid ea mask:

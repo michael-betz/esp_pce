@@ -23,6 +23,8 @@
 #include "e68000.h"
 #include "internal.h"
 
+//We need speed here!
+#pragma GCC optimize ("O3")
 
 void e68_cc_set_nz_8 (e68000_t *c, uint8_t msk, uint8_t val)
 {

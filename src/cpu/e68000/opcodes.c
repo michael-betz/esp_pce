@@ -23,6 +23,8 @@
 #include "e68000.h"
 #include "internal.h"
 
+//We need speed here!
+#pragma GCC optimize ("O3")
 
 #define e68_op_chk_addr(c, addr, wr) do { \
 	if (((c)->flags & E68_FLAG_NOADDR) == 0) { \

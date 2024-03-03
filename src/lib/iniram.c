@@ -76,7 +76,7 @@ int ini_get_rom (memory_t *mem)
 		return (1);
 	}
 
-	#ifdef SDL_SIM
+	#if SDL_SIM
 		pce_log_tag (MSG_INF, "ROM:", "addr=0x%08lx size=%lu file=%s\n",
 			ROM_ADDRESS, ROM_SIZE, ROM_FILE_NAME
 		);
