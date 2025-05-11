@@ -34,7 +34,7 @@
 //#define DEBUG_RTC 1
 //#define DEBUG_SCC 1
 //#define DEBUG_SERIAL 1
-//#define DEBUG_SCSI 1
+#define DEBUG_SCSI 1
 //#define DEBUG_SONY 1
 //#define DEBUG_VIA 1
 

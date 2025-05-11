@@ -21,6 +21,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "oled.h"
+#include "mipi_dsi.h"
 
 monitor_t  par_mon;
 const char *par_terminal = NULL;
@@ -138,22 +140,51 @@ disk_t *flash_disk_init(const char *part_name, unsigned drive_id)
 }
 
 
+static void esp_trm_update (terminal_t *trm)
+{
+	printf(
+		"esp_trm_update(x %d, y %d, w %d, h %d)\n",
+		trm->update_x,
+		trm->update_y,
+		trm->update_w,
+		trm->update_h
+	);
+
+    setColRange(trm->update_x, trm->update_x + trm->update_w - 1);
+    setRowRange(trm->update_y, trm->update_y + trm->update_h - 1);
+    mipiDsiSendLong(0x39, 0x2c, trm->buf, trm->buf_cnt);
+}
+
+
 terminal_t *ini_get_terminal (const char *def)
 {
 	terminal_t *trm = NULL;
 
-	trm = null_new (NULL);
+	// if ((trm = malloc(sizeof(terminal_t))) == NULL) {
+	// 	return NULL;
+	// }
 
-	if (trm == NULL) {
-		pce_log (MSG_ERR, "*** setting up null terminal failed\n");
-	}
+	trm = null_new(NULL);
 
-	return (trm);
+	// trm_init (trm, trm);
+
+	// trm->del = (void *) trm_del;
+	// trm->open = (void *) trm_open;
+	// trm->close = (void *) trm_close;
+	// trm->set_msg_trm = (void *) trm_set_msg_trm;
+	trm->update = (void *) esp_trm_update;
+	// sdl->trm.check = (void *) trm_check;
+
+	return trm;
 }
 
 
 void emu_task(void *pvParameters)
 {
+    // Initialize the DSI interface
+    mipiInit();
+    initOled();
+
 	pce_log_init();
 	pce_log_add_fp (stderr, 0, MSG_DEB);
 	mac_log_banner();
@@ -191,10 +222,61 @@ void emu_task(void *pvParameters)
 }
 
 
+#define LINE_LEN (311)
+
+// Draw grey bars, which should not be at an angle if LINE_LEN
+// matches the row-range of the draw window
+// static void disp()
+// {
+//     static unsigned iter = 0;
+//     static uint8_t clrData[LINE_LEN * 2];
+//     uint8_t cmd;
+
+//     uint8_t *p = clrData;
+//     for (unsigned i = 0; i < LINE_LEN; i++) {
+//         // native color format is RGB 565
+//         // here we drive it in RGB 555 to get white
+//         unsigned r = (i) & 0x1F;
+//         unsigned g = (i) & 0x1F;
+//         unsigned b = (i) & 0x1F;
+//         unsigned tmp = (b << 11) | (g << 6) | r;
+//         *p++ = tmp;
+//         *p++ = tmp >> 8;
+//     }
+
+//     if (iter == 0)
+//         cmd = 0x2C;  // CMD: write from start
+//     else
+//         cmd = 0x3C;  // CMD: continue write
+
+//     // printf("row %d\n", iter);
+
+//     mipiDsiSendLong(0x39, cmd, clrData, sizeof(clrData));
+
+//     iter++;
+// }
+
+// void oled_task(void *pvParameters)
+// {
+//     // Initialize the DSI interface
+//     mipiInit();
+//     initOled();
+
+//     setRowRange(5, 319 - 5);
+//     setColRange(5, 319 - 5);
+//     while (1) {
+//         disp();
+//         // vTaskDelay(1 / portTICK_PERIOD_MS);
+//     }
+// }
+
 void app_main(void)
 {
 	printf("Hello, this is esp_pce!\n");
 
+	// printf("Starting oled_task...\n");
+	// xTaskCreatePinnedToCore(&oled_task, "oled", 12 * 1024, NULL, 5, NULL, 1);
+
 	printf("Starting emu_task...\n");
-	xTaskCreatePinnedToCore(&emu_task, "emu", 6 * 1024, NULL, 5, NULL, 0);
+	xTaskCreatePinnedToCore(&emu_task, "emu", 20 * 1024, NULL, 5, NULL, 0);
 }
